@@ -44,14 +44,13 @@ class DetailViewController: UIViewController {
         
         debugPrint(data.overview)
         titleLabel.text = data.originalTitle
-        typeLabel.text = "News | Fantasy | Adventure"
-        
+        typeLabel.text = "News | Fantasy | Adventure" //TODO: change this
         overviewLabel.text = data.overview
         productionCompLabel.text = "walt Disney Pictures.Demo"
         popularityLabel.text = "\(data.popularity) votes"
         statusLabel.text = data.status
         budgetLabel.text = "\(data.budget)"
-        spokeLabel.text = data.overview
+        spokeLabel.text = data.overview // TODO: change this
         
         fetchImage(image: data.backdropPath)
         

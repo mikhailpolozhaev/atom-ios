@@ -10,11 +10,11 @@ import UIKit
 import Alamofire
 
 class MoviesTableViewController: UITableViewController {
-
-    
-    var arreglo = ["1","2","3"]
     
     var items: [MovieResult] = []
+    var totalPages = 0
+    var pages = 1
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -49,6 +49,12 @@ class MoviesTableViewController: UITableViewController {
             }
         }
 
+        
+        if indexPath.row == items.count - 1 { // last cell
+            if totalPages > pages { // more items to fetch
+                fechData() 
+            }
+        }
         return cell
     }
     
@@ -107,15 +113,17 @@ class MoviesTableViewController: UITableViewController {
     
 
     func fechData(){
-        let parameter = ["api_key":"51c4fa35a77d9ec54452516884169794","page": 2 ] as [String : Any]
+        let parameter = ["api_key":"51c4fa35a77d9ec54452516884169794","page": pages ] as [String : Any]
                
         let request = AF.request("https://api.themoviedb.org/3/movie/popular",parameters: parameter)
         request.validate()
         request.responseDecodable(of: MoviesResponse.self ){ response in
             
-                guard let movies = response.value else { return }
-                self.items = movies.results
-                self.tableView.reloadData()
+            guard let movies = response.value else { return }
+            self.items.append(contentsOf: movies.results)
+            self.totalPages = movies.totalPages
+            self.pages += 1
+            self.tableView.reloadData()
         }
     }
     
