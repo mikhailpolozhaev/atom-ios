@@ -12,6 +12,8 @@ class DetailViewController: UIViewController {
  
     @IBOutlet var movieImageView: UIImageView!
     @IBOutlet var overviewLabel: UILabel!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var typeLabel: UILabel!
     
     @IBOutlet var productionCompLabel: UILabel!
     @IBOutlet var popularityLabel: UILabel!
@@ -21,6 +23,7 @@ class DetailViewController: UIViewController {
     
     @IBOutlet var spokeLabel: UILabel!
     var movieId:Int?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,13 +40,15 @@ class DetailViewController: UIViewController {
         
     }
     
-    
     func setUpData(data:Movie){
         
         debugPrint(data.overview)
+        titleLabel.text = data.originalTitle
+        typeLabel.text = "News | Fantasy | Adventure"
+        
         overviewLabel.text = data.overview
         productionCompLabel.text = "walt Disney Pictures.Demo"
-        popularityLabel.text = "\(data.popularity)"
+        popularityLabel.text = "\(data.popularity) votes"
         statusLabel.text = data.status
         budgetLabel.text = "\(data.budget)"
         spokeLabel.text = data.overview
@@ -59,14 +64,5 @@ class DetailViewController: UIViewController {
                 }
             }
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
