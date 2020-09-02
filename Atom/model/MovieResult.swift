@@ -6,7 +6,7 @@ struct MovieResult:Decodable{
     let originalTitle:String
     let popularity:Double
     let posterPath:String
-    let backdropPath:String
+    let backdropPath:String?
     let releaseDate:String
     let title:String
     let voteAverage:Double

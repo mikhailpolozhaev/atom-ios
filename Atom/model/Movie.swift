@@ -21,12 +21,17 @@ struct Movie:Decodable {
     let budget:Int
     let status:String
     let tagline:String
+    let productionCompanies:[Companie]?
+    let spokenLanguages:[Languaje]?
+    let genres:[Genre]?
     
     enum CodingKeys: String, CodingKey {
         case id
         case overview
         case originalLanguage = "original_language"
         case originalTitle = "original_title"
+        case productionCompanies = "production_companies"
+        case spokenLanguages = "spoken_languages"
         case popularity
         case posterPath = "poster_path"
         case backdropPath = "backdrop_path"
@@ -37,5 +42,6 @@ struct Movie:Decodable {
         case budget
         case status
         case tagline
+        case genres
     }
 }

@@ -10,16 +10,14 @@ import UIKit
 import Alamofire
 
 class MoviesTableViewController: UITableViewController {
-    
-    var items: [MovieResult] = []
+
+    var items:[MovieResult] = []
     var totalPages = 0
     var pages = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         fechData()
-
     }
 
     // MARK: - Table view data source
@@ -34,65 +32,33 @@ class MoviesTableViewController: UITableViewController {
         return items.count
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MovieTableViewCell
 
         // Configure the cell...
         let item = items[indexPath.row]
         cell.title?.text = item.title
         cell.movieDetail?.text = item.overview
-        
-        AF.download("https://image.tmdb.org/t/p/original" + item.backdropPath).responseData { response in
-            if let data = response.value {
-                cell.movieImage?.image = UIImage(data: data)
+        if let imagePath = item.backdropPath {
+            AF.download("https://image.tmdb.org/t/p/original" + imagePath).responseData { response in
+                if let data = response.value {
+                    cell.movieImage?.image = UIImage(data: data)
+                }
             }
+        }else{
+              cell.movieImage?.image = nil
         }
-
         
         if indexPath.row == items.count - 1 { // last cell
             if totalPages > pages { // more items to fetch
-                fechData() 
+               
+                fechData()
             }
         }
         return cell
     }
     
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let idMovie = items[indexPath.row].id
         self.performSegue(withIdentifier: "detailSegue", sender: idMovie)
@@ -110,15 +76,12 @@ class MoviesTableViewController: UITableViewController {
         }
         
     }
-    
 
     func fechData(){
-        let parameter = ["api_key":"51c4fa35a77d9ec54452516884169794","page": pages ] as [String : Any]
-               
-        let request = AF.request("https://api.themoviedb.org/3/movie/popular",parameters: parameter)
-        request.validate()
+        let parameter = ["api_key":Api.API_KEY,"page": pages ] as [String : Any]
+        let request = AF.request(Api.Path.MOVIES_POPULAR, parameters: parameter)
         request.responseDecodable(of: MoviesResponse.self ){ response in
-            
+            debugPrint(response)
             guard let movies = response.value else { return }
             self.items.append(contentsOf: movies.results)
             self.totalPages = movies.totalPages

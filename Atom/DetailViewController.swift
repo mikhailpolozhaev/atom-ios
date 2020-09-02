@@ -27,41 +27,40 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-      
-        let parameter = ["api_key":"51c4fa35a77d9ec54452516884169794"] as [String : Any]
-                   
-            let request = AF.request("https://api.themoviedb.org/3/movie/\(movieId!)",parameters: parameter)
+        let parameter = ["api_key":Api.API_KEY] as [String : Any]
+        let request = AF.request("https://api.themoviedb.org/3/movie/\(movieId!)",parameters: parameter)
          
-            request.responseDecodable(of: Movie.self){ response in
-                guard let movies = response.value else { return }
-                self.setUpData(data: movies)
-            }
-        
+        request.responseDecodable(of: Movie.self){ response in
+            guard let movies = response.value else { return }
+            self.setUp(data: movies)
+        }
     }
     
-    func setUpData(data:Movie){
+    func setUp(data:Movie){
         
-        debugPrint(data.overview)
+        let genres = data.genres?.compactMap({$0.name}).joined(separator: " | ")
+        let companies = data.productionCompanies?.compactMap({$0.name}).joined(separator:", ")
+        let languages = data.spokenLanguages?.compactMap({$0.name}).joined(separator:", ")
+        
         titleLabel.text = data.originalTitle
-        typeLabel.text = "News | Fantasy | Adventure" //TODO: change this
+        typeLabel.text = genres
         overviewLabel.text = data.overview
-        productionCompLabel.text = "walt Disney Pictures.Demo"
+        productionCompLabel.text = companies
         popularityLabel.text = "\(data.popularity) votes"
         statusLabel.text = data.status
         budgetLabel.text = "\(data.budget)"
-        spokeLabel.text = data.overview // TODO: change this
+        spokeLabel.text = languages
         
         fetchImage(image: data.backdropPath)
         
     }
     
     func fetchImage(image:String){
-        AF.download("https://image.tmdb.org/t/p/original" + image).responseData { response in
-                if let data = response.value {
-                    self.movieImageView.image = UIImage(data: data)
-                }
+        AF.download(Api.Path.IMAGE + image).responseData { response in
+            if let data = response.value {
+                self.movieImageView.image = UIImage(data: data)
             }
+        }
     }
 
 }
