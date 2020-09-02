@@ -52,7 +52,6 @@ class MoviesTableViewController: UITableViewController {
         
         if indexPath.row == items.count - 1 { // last cell
             if totalPages > pages { // more items to fetch
-               
                 fechData()
             }
         }
